@@ -1,8 +1,6 @@
-#include <exception>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <vector>
 #include <cctype>
 
 enum TokenType{
@@ -22,7 +20,25 @@ class Lexer{
 	public:
 		Lexer(const std::string &input): input_(input), currentPos_(0){}
 		Token getNextToken() {
-			//test
+			
+			skipWhiteSpace();
+
+			if(currentPos_ >= input_.size()){
+				return {INVALID, ""};
+			}
+
+			char current = input_[currentPos_];
+
+			if(isalpha(current)){
+				return parseKeyword();
+			}else if(isdigit(current)){
+				parseInteger();
+			}else if(isSeparator(current)){
+				return parseSeparator();
+			}else{
+				return parseChar();
+			}
+			currentPos_++;
 		}
 	private:
 		std::string input_;
@@ -50,7 +66,7 @@ class Lexer{
 		Token parseInteger(){
 			std::string tokenValue;
 			while(currentPos_ < input_.size() && isdigit(input_[currentPos_])){
-				tokenValue += input_[currentPos_];
+				tokenValue += input_[currentPos_]-'0';
 				currentPos_++;
 			}
 			return {INTEGER, tokenValue};
@@ -76,5 +92,26 @@ class Lexer{
 };
 
 int main(){
+	std::ifstream file("test.mlg");
+
+	if(!file.is_open()){
+		std::cerr << "Error opening file...\n";
+		return 1;
+	}
+
+	std::ostringstream content;
+	content << file.rdbuf();
+	file.close();
+
+	Lexer lexer(content.str());
+
+	Token token;
+	do{
+		token = lexer.getNextToken();
+		if(token.type != INVALID){
+			std::cout << "Type: " << token.type << ", Value: "<< token.value << '\n';
+		}
+
+	}while(token.type != INVALID);
 	return 0;
 }
