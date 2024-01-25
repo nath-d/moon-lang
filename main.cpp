@@ -6,7 +6,7 @@
 enum TokenType{
 	CHAR,
 	INTEGER,
-	KEYWORD,
+	//KEYWORD,
 	SEPARATOR,
 	INVALID
 };
@@ -30,14 +30,13 @@ class Lexer{
 			char current = input_[currentPos_];
 
 			if(isalpha(current)){
-				return parseKeyword();
+				return parseChar();
 			}else if(isdigit(current)){
 				parseInteger();
 			}else if(isSeparator(current)){
 				return parseSeparator();
-			}else{
-				return parseChar();
 			}
+
 			currentPos_++;
 		}
 	private:
@@ -54,19 +53,19 @@ class Lexer{
 			return ch == ',' || ch == ';' || ch == '(' || ch == ')';
 		}
 
-		Token parseKeyword(){
+		/*Token parseKeyword(){
 			std::string tokenValue;
 			while(currentPos_ < input_.size() && isalnum(input_[currentPos_])){
 				tokenValue += input_[currentPos_];
 				currentPos_++;
 			}
 			return {KEYWORD, tokenValue};
-		}
+		}*/
 
 		Token parseInteger(){
 			std::string tokenValue;
 			while(currentPos_ < input_.size() && isdigit(input_[currentPos_])){
-				tokenValue += input_[currentPos_]-'0';
+				tokenValue += input_[currentPos_];
 				currentPos_++;
 			}
 			return {INTEGER, tokenValue};
@@ -82,8 +81,10 @@ class Lexer{
 
 		Token parseChar(){
 			std::string tokenValue;
-			tokenValue = input_[currentPos_];
-			currentPos_++;
+			if(isalpha(input_[currentPos_])){
+				tokenValue = input_[currentPos_];
+				currentPos_++;
+			}
 
 			return {CHAR, tokenValue};
 		}
@@ -114,4 +115,5 @@ int main(){
 
 	}while(token.type != INVALID);
 	return 0;
+	//test
 }
