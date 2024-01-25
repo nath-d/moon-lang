@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <ctype.h>
 
 typedef enum{
@@ -30,7 +30,7 @@ typedef struct{
 }TokenLiteral;
 
 void generate_number(char current, FILE *file){
-	while(isdigit(current) && current != EOF){
+	while(isdigit(current)){
 		if(!isdigit(current)){
 			return;
 		}
@@ -50,7 +50,8 @@ void lexer(FILE *file){
 		}else if(current == ')'){
 			printf("FOUND CLOSED PARENTHESIS\n");
 		}else if(isdigit(current)){
-			generate_number(current, file);			
+			generate_number(current, file);		
+			//printf("I");	
 		}else if(isalpha(current)){
 			printf("FOUND CHARACTER %c\n",current);
 		}
