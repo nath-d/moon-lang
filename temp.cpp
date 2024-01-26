@@ -18,23 +18,24 @@ struct Token{
 
 class Lexer{
 	public:
-		Lexer(const std::string &inputString){
-			input = inputString;
-			currentPos = 0;
+		Lexer(const std::string &str){
+			input = str;
+			currentPos_ = 0;
 		}
 		Token getNextToken() {
 			
 			skipWhiteSpace();
 
-			if(currentPos >= input.size()){
+			if(currentPos_ >= input.size()){
 				return {INVALID, ""};
 			}
 
-			char current = input[currentPos];
+			char current = input[currentPos_];
 
 			if(isalpha(current)){
 				return parseKeyword();
 			}else if(isdigit(current)){
+				std::cout<<"integer\n";
 				return parseInteger();
 			}else if(isSeparator(current)){
 				return parseSeparator();
@@ -43,11 +44,11 @@ class Lexer{
 		}
 	private:
 		std::string input;
-		std::size_t currentPos;
+		std::size_t currentPos_;
 		
 		void skipWhiteSpace(){
-			while(currentPos < input.size() && isspace(input[currentPos])){
-				currentPos++;
+			while(currentPos_ < input.size() && isspace(input[currentPos_])){
+				currentPos_++;
 			}
 		}
 
@@ -57,9 +58,9 @@ class Lexer{
 
 		Token parseKeyword(){
 			std::string tokenValue;
-			while(currentPos < input.size() && isalnum(input[currentPos])){
-				tokenValue += input[currentPos];
-				currentPos++;
+			while(currentPos_ < input.size() && isalnum(input[currentPos_])){
+				tokenValue += input[currentPos_];
+				currentPos_++;
 			}
 			if(tokenValue.size() == 1 && !isdigit(tokenValue[0])){
 				return {CHAR, tokenValue};
@@ -70,20 +71,32 @@ class Lexer{
 
 		Token parseInteger(){
 			std::string tokenValue;
-			while(currentPos < input.size() && isdigit(input[currentPos])){
-				tokenValue += input[currentPos];
-				currentPos++;
+			while(currentPos_ < input.size() && isdigit(input[currentPos_])){
+				tokenValue += input[currentPos_];
+				currentPos_++;
 			}
 			return {INTEGER, tokenValue};
 		}
 
 		Token parseSeparator(){
 			std::string tokenValue;
-			tokenValue = input[currentPos];
-			currentPos++;
+			tokenValue = input[currentPos_];
+			currentPos_++;
 
 			return {SEPARATOR, tokenValue};
 		}
+
+		/*Token parseChar(){
+			std::string tokenValue;
+			if(isalpha(input[currentPos_])){
+				tokenValue = input[currentPos_];
+				currentPos_++;
+			}
+
+			return {CHAR, tokenValue};
+		}*/
+
+
 };
 
 int main(){
