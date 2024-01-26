@@ -29,19 +29,18 @@ class Lexer{
 
 			char current = input_[currentPos_];
 
-			if(isalnum(current)){
+			if(isalpha(current)){
 				return parseKeyword();
 			}else if(isdigit(current)){
-				parseInteger();
+				return parseInteger();
 			}else if(isSeparator(current)){
 				return parseSeparator();
 			}
 
-			currentPos_++;
 		}
 	private:
 		std::string input_;
-		size_t currentPos_;
+		std::size_t currentPos_;
 		
 		void skipWhiteSpace(){
 			while(currentPos_ < input_.size() && isspace(input_[currentPos_])){
@@ -59,10 +58,11 @@ class Lexer{
 				tokenValue += input_[currentPos_];
 				currentPos_++;
 			}
-			if(tokenValue.size() == 1){
+			if(tokenValue.size() == 1 && !isdigit(tokenValue[0])){
 				return {CHAR, tokenValue};
+			}else if(!isdigit(tokenValue[0])){
+				return {KEYWORD, tokenValue};
 			}
-			return {KEYWORD, tokenValue};
 		}
 
 		Token parseInteger(){
